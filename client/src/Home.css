@@ -1,0 +1,310 @@
+/* Home.css */
+
+/* Main container */
+.chat-app {
+  display: flex;
+  height: 100vh;
+  background-color: #acedf6; /* Telegram's light gray background */
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Sidebar (left) */
+.sidebar {
+  width: 450px;
+  background-color: #0088cc; /* Telegram Blue background */
+  border-right: 1px solid #e0e0e0; /* Light gray border */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar h1 {
+  font-size: 24px;
+  color: white; /* White text for the title */
+  margin-left: 140px;
+  
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+.profile .limon img{
+  display: flex;
+  border-radius: 50%;
+  width: 50%;
+  height: 50%;
+}
+
+.profile-img {
+  display: none;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.profile h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff; /* White text for the name */
+}
+
+ .menu {
+  display: flex;
+  justify-content: first baseline;
+}
+
+
+.bar1, .bar2, .bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: #333;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+
+.change .bar2 {opacity: 0;}
+
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
+}
+
+
+
+.menu button {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #fff; /* White color for menu button */
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  background-color: #0088cc; /* Telegram Blue for dropdown */
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f0f3f5; /* Light hover effect */
+}
+
+/* Search bar */
+.search-bar {
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+/* Friend list */
+.friend-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.friend {
+  padding: 12px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.friend:hover {
+  background-color: #e9f7fe; /* Light blue hover effect */
+}
+
+/* Chatbox (right) */
+.chatbox {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #acedf6; /* White background for the chatbox */
+}
+
+.chat-header {
+  padding: 20px;
+  background-color: #696a6b;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Message container */
+.messages {
+  white-space: pre-wrap;
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #acedf6; /* Slightly darker background */
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  background-color: #acedf6; /* Telegram Blue bubble for sent messages */
+  color: #00070a; /* White text for sent messages */
+}
+
+.message.friend {
+  
+  align-self: flex-start;
+  background-color: #ffffff; /* White bubble for received messages */
+  border: 1px solid #e0e0e0;
+  color: #333; /* Text color for received messages */
+}
+
+.message.me {
+  
+  align-self: flex-end;
+  background-color: #0088cc; /* Telegram Blue bubble for sent messages */
+  color: #00070a; /* Text color for sent messages */
+}
+
+/* Input area */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #696a6b;
+  border-top: 1px solid #e0e0e0;
+}
+
+.input-area textarea {
+  flex-grow: 1;
+  background-color: #bacad1;
+  resize: none;
+  border: 1px solid #ccc;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  height: 30px;
+  margin-right: 15px;
+}
+
+.input-area button {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.file-upload {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Chat placeholder */
+.chat-placeholder {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: black;
+  color: black;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #0088cc;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content button {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+/* .dropdown:hover .dropbtn {background-color: #3e8e41;} */
