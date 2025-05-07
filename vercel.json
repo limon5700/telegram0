@@ -23,6 +23,11 @@
       "dest": "client/build/$1"
     }
   ],
+  "regions": ["sin1", "hnd1", "syd1"],
+  "buildCommand": "npm run build",
+  "outputDirectory": "client/build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "env": {
     "MONGODB_URI": "mongodb+srv://brucerobert434:LiMoN003@cluster0.8obupn9.mongodb.net/usersdb?retryWrites=true&w=majority&appName=Cluster0",
     "JWT_SECRET": "666",
