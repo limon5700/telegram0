@@ -9,12 +9,12 @@
       }
     },
     {
-      "src": "client",
+      "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "buildCommand": "npm install && cd client && npm install && CI=false npm run build",
-        "installCommand": "npm install"
+        "buildCommand": "cd client && npm install && CI=false npm run build",
+        "installCommand": "cd client && npm install"
       }
     }
   ],
