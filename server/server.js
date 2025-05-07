@@ -12,31 +12,31 @@ const User = require('./models/User');
 const Message = require('./models/Message');
 const users = {};
 
+const PORT = process.env.PORT || 5000;
+const SECRET = process.env.JWT_SECRET || '666';
 
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://*.vercel.app'  // Allow all Vercel subdomains
+];
 
-
-
-
- 
-
-
-
-
-
-
-
-
-const PORT = 5000;
-const SECRET = '666';
-
-
-app.use(cors());
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.some(allowedOrigin => 
+      origin === allowedOrigin || origin.endsWith('.vercel.app'))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 
-
 // MongoDB Connect
-mongoose.connect('mongodb+srv://brucerobert434:LiMoN003@cluster0.8obupn9.mongodb.net/usersdb?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://brucerobert434:LiMoN003@cluster0.8obupn9.mongodb.net/usersdb?retryWrites=true&w=majority&appName=Cluster0')
 .then(() => console.log('MongoDB Connected (Atlas)'))
 .catch(err => console.error('MongoDB Connection Error:', err));
 
@@ -45,24 +45,24 @@ const server = http.createServer(app);
 
 // Setup socket.io
 const io = new Server(server, {
-  cors: { origin: '*' }
+  cors: {
+    origin: function(origin, callback) {
+      if (!origin || allowedOrigins.some(allowedOrigin => 
+        origin === allowedOrigin || origin.endsWith('.vercel.app'))) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
 
 const socketIo = require('socket.io');
 
-
-
-
-
 // Socket connection for real-time chat
 let activeUsers = [];
-
-
-
-
-
-
-
 
 // User connect hole
 io.on('connection', (socket) => {
@@ -115,18 +115,6 @@ io.on('connection', (socket) => {
     });
   });
   
-
-
-
-
-
-
-
-
-
-
-
-
 const sendMessage = async () => {
   if (!content) return;
   console.log('Sending message...');
@@ -167,14 +155,6 @@ const sendMessage = async () => {
   await receiver.save();
 };
 
-
-
-
-
-
-
-
-
 app.get('/messages/:sender/:receiver', async (req, res) => {
   const { sender, receiver } = req.params;
   try {
@@ -189,8 +169,6 @@ app.get('/messages/:sender/:receiver', async (req, res) => {
     res.status(500).json({ message: 'Error fetching messages' });
   }
 });
-
-
 
 app.post('/message', async (req, res) => {
   try {
@@ -209,10 +187,6 @@ const message = new Message({
     res.status(500).send({ error: 'Error saving message' });
   }
 });
-
-
-
-
 
 // Signup
 app.post("/signup", async (req, res) => {
@@ -244,10 +218,6 @@ app.post("/signup", async (req, res) => {
     res.status(500).json({ message: "Signup failed. Please try again" });
   }
 });
-
-
-
-
 
 // Login
 app.post('/login', async (req, res) => {
@@ -293,7 +263,6 @@ app.put('/users/:id/status', async (req, res) => {
   }
 });
 
-
 //  Edit user profile
 app.put('/users/:id', async (req, res) => {
   const { id } = req.params;
@@ -327,8 +296,6 @@ app.get('/users', async (req, res) => {
   }
 });
 
-
-
 // Search user by ID
 app.get('/users/id/:id', async (req, res) => {
   const { id } = req.params;
@@ -345,10 +312,11 @@ app.get('/users/id/:id', async (req, res) => {
   }
 });
 
-
-
-
 // Start server
-server.listen(5000, () => {
-  console.log('Server running on http://localhost:5000');
-});
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client';
-import axios from 'axios';
+import { messageService } from './services/apiService';
+import { getSocket, disconnectSocket } from './services/socketService';
 import './Home.css';
-
-const socket = io('http://localhost:5000');
 
 function Home() {
   const navigate = useNavigate();
@@ -12,7 +10,7 @@ function Home() {
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [content, setcontent] = useState('');
+  const [content, setContent] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const messagesEndRef = useRef(null);
@@ -29,27 +27,41 @@ function Home() {
 
   useEffect(() => {
     if (user?._id) {
+      const socket = getSocket();
       socket.emit('register', user._id);
     }
   }, [user]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/users').then(res => {
-      setFriends(res.data);
-    });
+    const fetchUsers = async () => {
+      try {
+        const response = await messageService.getUsers();
+        setFriends(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    fetchUsers();
   }, []);
 
   useEffect(() => {
     if (user && selectedFriend) {
-      axios.get(`http://localhost:5000/messages/${user._id}/${selectedFriend._id}`)
-        .then(res => setMessages(res.data))
-        .catch(err => console.log(err));
+      const fetchMessages = async () => {
+        try {
+          const messages = await messageService.getMessages(user._id, selectedFriend._id);
+          setMessages(messages);
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        }
+      };
+      fetchMessages();
     }
-  }, [selectedFriend]);
+  }, [selectedFriend, user]);
 
   useEffect(() => {
     if (!user) return;
 
+    const socket = getSocket();
     const handleNewMessage = (msg) => {
       const isCurrentChat =
         selectedFriend &&
@@ -65,17 +77,6 @@ function Home() {
     return () => socket.off('newMessage', handleNewMessage);
   }, [selectedFriend, user]);
 
-  const fetchMessages = async (friend) => {
-    setSelectedFriend(friend);
-    setMessages([]);
-    try {
-      const res = await axios.get(`http://localhost:5000/messages/${user._id}/${friend._id}`);
-      setMessages(res.data);
-    } catch (err) {
-      console.error("Error fetching messages:", err);
-    }
-  };
-
   const sendMessage = async () => {
     if (!content.trim()) return;
 
@@ -88,22 +89,20 @@ function Home() {
     };
 
     try {
-      await axios.post('http://localhost:5000/message', {
-        sender: user._id,
-        receiver: selectedFriend._id,
-        content,
-      });
-
+      await messageService.sendMessage(newMsg);
       setMessages(prev => [...prev, newMsg]);
+      const socket = getSocket();
       socket.emit('send-message', newMsg);
-      setcontent('');
+      setContent('');
     } catch (err) {
       console.error('Error sending message:', err);
     }
   };
 
   const handleLogout = () => {
+    disconnectSocket();
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -228,7 +227,7 @@ function Home() {
             <div className="input-area">
               <textarea
                 value={content}
-                onChange={(e) => setcontent(e.target.value)}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="Type message"
                 rows={1}
                 onKeyDown={(e) => {
